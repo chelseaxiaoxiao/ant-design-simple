@@ -3,31 +3,38 @@
 
 declare namespace API {
   type CurrentUser = {
-    name?: string;
-    avatar?: string;
-    userid?: string;
     email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
+    object?: string;
+    id?: string;
     phone?: string;
+    status?: string;
+    accounts?: object;
+  };
+  type SelectAccountParams = {
+    account_id?: object;
+  };
+  type Permissions = {
+    success?: boolean;
+    message?: string;
+    data?: object;
   };
 
-  type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+  // type LoginResult = {
+  //   status?: string;
+  //   type?: string;
+  //   currentAuthority?: string;
+  // };
+  type LoginResultData = {
+    access_token?: string;
+    token_type?: string;
+    expires_in?: int;
   };
+  type LoginResult = {
+    success?: boolean;
+    message?: string;
+    data?: LoginResultData;
+  };
+
 
   type PageParams = {
     current?: number;
@@ -61,11 +68,15 @@ declare namespace API {
     status?: string;
   };
 
+  // type LoginParams = {
+  //   username?: string;
+  //   password?: string;
+  //   autoLogin?: boolean;
+  //   type?: string;
+  // };
   type LoginParams = {
-    username?: string;
+    email?: string;
     password?: string;
-    autoLogin?: boolean;
-    type?: string;
   };
 
   type ErrorResponse = {
