@@ -1,6 +1,5 @@
 import { Select } from 'antd';
 import RightContent from '../RightContent';
-import LeftContent from '../LeftContent';
 var myStyle = {
     color: '#FF0000'
 };
@@ -10,9 +9,9 @@ var divStyle = {
 };
 
 const Header: React.FC = () => {
+    console.log('Header.....')
     return (
         <div style={divStyle}>
-            <LeftContent />
             <RightContent />
         </div>
 );

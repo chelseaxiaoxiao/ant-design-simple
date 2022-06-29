@@ -1,8 +1,13 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from 'umi';
-/** 获取当前的用户 GET /api/currentUser */
+//import { request } from 'umi';
 
+//import { extend } from 'umi-request';
+//import { request } from './request';
+import  request  from './request';
+console.log('api.js')
+
+/** 获取当前的用户 GET /api/currentUser */
 
 export async function currentUser(options?: { [key: string]: any }) {
   //return request<{ data: API.CurrentUser; }>('/api/currentUser', {
@@ -10,20 +15,16 @@ export async function currentUser(options?: { [key: string]: any }) {
   console.log(options)
   return request<{ data: API.CurrentUser; }>('/v1/current_user', {
     method: 'GET',
-    headers:{
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'authorization':`Bearer ${localStorage.getItem('token')}`
-    },
-    // ...(options || {}),
+    // headers:{
+    //   'Content-Type': 'application/x-www-form-urlencoded',
+    //   'authorization':`Bearer ${localStorage.getItem('token')}`
+    // },
+    ...(options || {}),
   });
 }
 export async function currentAccount(body: API.SelectAccountParams, options?: { [key: string]: any }) {
   return request<{ data: API.Permissions; }>('/v1/select_account', {
     method: 'POST',
-    headers:{
-      'Content-Type': 'application/json',
-      'authorization':`Bearer ${localStorage.getItem('token')}`
-    },
     data: body,
      ...(options || {}),
   });

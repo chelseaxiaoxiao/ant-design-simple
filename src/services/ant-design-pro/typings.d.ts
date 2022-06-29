@@ -10,6 +10,15 @@ declare namespace API {
     status?: string;
     accounts?: object;
   };
+  type Account = {
+    is_owner?: boolean,
+    permissions?: array,
+  }
+  type CurrentAccount = {
+    success?: boolean;
+    message?: string;
+    data?: Account;
+  };
   type SelectAccountParams = {
     account_id?: object;
   };

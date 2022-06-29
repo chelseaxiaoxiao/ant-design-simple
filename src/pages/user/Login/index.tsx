@@ -1,17 +1,12 @@
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { login, currentAccount, currentUser } from '@/services/ant-design-pro/api';
+
 import {
-  AlipayCircleOutlined,
   LockOutlined,
-  MobileOutlined,
-  TaobaoCircleOutlined,
   UserOutlined,
-  WeiboCircleOutlined,
 } from '@ant-design/icons';
 import {
   LoginForm,
-  ProFormCaptcha,
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
@@ -35,20 +30,9 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const intl = useIntl();
-
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      await setInitialState((s) => ({
-        ...s,
-        currentUser: userInfo,
-      }));
-    }
-  };
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
@@ -62,8 +46,37 @@ const Login: React.FC = () => {
         if (msg.hasOwnProperty('data')) {
           localStorage.setItem('token', msg.data.access_token);//转换成json字符串序列
         }
+
+        const current_user = await currentUser();
+        if (current_user.success === true) {
+          let accountId = current_user.data.accounts[0]['id'];
+          if (localStorage.getItem('accountId') === null || localStorage.getItem('accountId') === '' || localStorage.getItem('accountId') === undefined) {
+            localStorage.setItem('accountId', accountId);
+          }
+          await setInitialState((s) => ({
+            ...s,
+            currentUser: current_user.data,
+          }));
+
+          const current_account = await currentAccount({ 'account_id': accountId });
+          if (current_account.success === true) {
+            await setInitialState((s) => ({
+              ...s,
+              currentAccount: current_account.data,
+            }));
+          }
+
+
+        }
+
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
+
+        console.log('login current_user')
+
+
+       // await fetchUserInfo();
+
+
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;
         const { query } = history.location;
@@ -82,8 +95,6 @@ const Login: React.FC = () => {
       message.error(defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
-
   return (
     <div className={styles.container}>
       <div className={styles.lang} data-lang>

@@ -1,9 +1,29 @@
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
-export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
-  const { currentUser } = initialState ?? {};
+const getCol = function getCol(matrix, col){
+    var column = [];
+    for(var i=0; i < matrix.length; i++){
+        column.push(matrix[i][col]);
+    }
+    return column;
+}
+
+export default function access(initialState: { currentUser?: API.CurrentUser, currentAccount?: API.CurrentAccount } | undefined) {
+  const { currentUser, currentAccount } = initialState ?? {};
+  console.log('access currentUser')
+  console.log(currentUser)
+  console.log('access currentAccount')
+  console.log(currentAccount)
+    let permissions = Array();
+    let is_owner = false; ;
+    if(currentAccount && currentAccount.hasOwnProperty('permissions')) {
+         permissions = getCol(currentAccount.permissions, 'permission');
+         is_owner = currentAccount.is_owner;
+    }
+
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
+    normalRouteFilter: (route) => (is_owner || permissions.includes(route.name))
   };
 }
