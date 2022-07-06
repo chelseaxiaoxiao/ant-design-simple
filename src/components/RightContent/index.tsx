@@ -6,6 +6,7 @@ import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
 import Account from './AccountDropdown';
 import styles from './index.less';
+import NoticeIconView from '../NoticeIcon';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -25,9 +26,10 @@ const GlobalHeaderRight: React.FC = () => {
   return (
     <Space className={className}>
       <Account />
-      <Switch checkedChildren="开发模式" unCheckedChildren="测试模式" defaultChecked />
-      <Avatar />
-      <SelectLang className={styles.action} />
+            <Switch checkedChildren="开发模式" unCheckedChildren="测试模式" defaultChecked />
+            <NoticeIconView />
+            <Avatar />
+            <SelectLang className={styles.action} />
     </Space>
   );
 };

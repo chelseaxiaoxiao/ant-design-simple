@@ -10,7 +10,7 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, message, Tabs , Card} from 'antd';
 import React, { useState } from 'react';
 import { FormattedMessage, history, SelectLang, useIntl, useModel } from 'umi';
 import styles from './index.less';
@@ -36,6 +36,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
+      console.log('login handleSubmit handleSubmit')
       // 登录
       const msg = await login({ ...values });
       if (msg.success === true) {
@@ -100,11 +101,19 @@ const Login: React.FC = () => {
       <div className={styles.lang} data-lang>
         {SelectLang && <SelectLang />}
       </div>
+
       <div className={styles.content}>
+        <div style={{width: 400, position: 'relative', left: '46%' }}>
+          <img alt="logo" src="https://www.payssion.com/static/img/logoadmin.png" />
+        </div>
+
+        {/*<Card style={{width: 400, position: 'relative', left: '35%' }} >*/}
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          // logo={<img alt="logo" src="/logo.svg" />}
+         // logo={<img alt="logo" src="https://www.payssion.com/static/img/logoadmin.png" />}
+          title="Welcome Back!"
+          // subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+         // subTitle="Welcome Back"
           initialValues={{
             autoLogin: true,
           }}
@@ -170,8 +179,6 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
-
           <div
             style={{
               marginBottom: 24,
@@ -184,11 +191,14 @@ const Login: React.FC = () => {
               style={{
                 float: 'right',
               }}
+              href="/user/reset_password"
             >
-              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
+              <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码"/>
             </a>
           </div>
         </LoginForm>
+        {/*</Card>*/}
+
       </div>
       <Footer />
     </div>

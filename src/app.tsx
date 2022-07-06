@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
+import LeftContent from '@/components/LeftContent';
 import HeaderContent from '@/components/HeaderContent';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
@@ -7,11 +8,17 @@ import { PageLoading, SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import {currentUser as queryCurrentUser, currentAccount} from './services/ant-design-pro/api';
+import {currentUser as queryCurrentUser, currentAccount} from './services/ant-design-pro/user';
 import { useModel } from 'umi';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+const passwordResetPath = '/user/password_reset';
+const passwordForgetPath = '/user/password_forget';
+const signUpPath = '/user/register';
+const activePath = '/user/active';
+const confirmEmailPath = '/user/confirm_email';
+const acceptInvitationPath = '/user/accept_invitation';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -26,7 +33,8 @@ const getCol = function getCol(matrix, col){
   return column;
 }
 
-/**
+/*
+ *
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 console.log('app app tsx')
@@ -68,7 +76,14 @@ export async function getInitialState(): Promise<{
   };
 
   // 如果不是登录页面，执行
-  if (history.location.pathname !== loginPath) {
+  if (history.location.pathname !== loginPath
+      && history.location.pathname !== passwordResetPath
+      && history.location.pathname !== passwordForgetPath
+      && history.location.pathname !== signUpPath
+      && history.location.pathname !== activePath
+      && history.location.pathname !== confirmEmailPath
+      && history.location.pathname !== acceptInvitationPath
+  ) {
     console.log('location location location')
     const currentUser = await fetchUserInfo();
     const currentAccount = await fetchAccountInfo();
@@ -90,8 +105,9 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-  //  headerRender: () => <HeaderContent />,
-    rightContentRender: () => <RightContent />,
+    headerRender: () => <HeaderContent />,
+  //  leftContentRender: () => <LeftContent />,
+    //rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
       content: initialState?.currentUser?.email,
@@ -100,12 +116,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!initialState?.currentUser && history.location.pathname !== passwordResetPath
+          && history.location.pathname !== passwordForgetPath
+          && history.location.pathname !== signUpPath
+          && history.location.pathname !== activePath
+          && history.location.pathname !== confirmEmailPath
+          && history.location.pathname !== acceptInvitationPath
+      ) {
         history.push(loginPath);
       }
     },
     links: isDev
-      ? [
+      ?
+        [
           <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
             <LinkOutlined />
             <span>OpenAPI 文档</span>

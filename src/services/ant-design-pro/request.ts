@@ -1,6 +1,8 @@
 import { extend } from 'umi-request'
-import { notification } from 'antd'
-const baseUrl = process.env.BASE_URL
+import { message } from 'antd'
+
+
+
 const codeMessage: any = {
     200: '服务器成功返回请求的数据。',
     201: '新建或修改数据成功。',
@@ -18,20 +20,9 @@ const codeMessage: any = {
     503: '服务不可用，服务器暂时过载或维护。',
     504: '网关超时。',
 }
-
-const errorHandler = (error: any) => {
-    const { response = {} } = error
-    const errortext = codeMessage[response.status] || response.statusText
-    const { status, url } = response
-
-    notification.error({
-        message: `failed: ${status}: ${url}`,
-        description: errortext,
-    })
-}
 console.log('request.js')
 let request = extend({
-    errorHandler, // 默认错误处理
+  //  errorHandler, // 默认错误处理
 })
 /**
  * 所以请求拦截器
@@ -48,7 +39,18 @@ request.interceptors.request.use((url, options): any => {
     }
 });
 
+request.interceptors.response.use(async (response) => {
+    const data = await response.clone().json();
+    // const currentInterface = getPureInterface(response.url); // 这个方法是为了得到纯接口，然后可以适时的选择跳过，或者做别的操作
+    // token 失效
+    if(data.success === false) {
 
+        message.error( data.message);
+        return Promise.reject(new Error(data.message || 'Error'))
+    }
+
+    return response;
+})
 export  default request;
 
 
